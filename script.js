@@ -207,7 +207,7 @@ class Star extends Body {
 class Planet extends Body {
     constructor(x, y, speed, angle, type, r, g, b) {
         let mass = PLANET;
-        let radius = 5;
+        let radius = 7;
         switch(type) {
             case "rocky":
                 mass = PLANET;
@@ -239,13 +239,13 @@ class Moon extends Body {
 /*
 bodies.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
 bodies.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
-bodies.push(new Planet(width/2 - 550, height/2, Math.sqrt(G*2*SUN/550), 3*Math.PI/2, "rocky", 125, 0, 0));
-bodies.push(new Planet(width/2 + 200, height/2, Math.sqrt(G*2*SUN/200), 3*Math.PI/2, "rocky", 125, 0, 0));
+//bodies.push(new Planet(width/2 - 550, height/2, Math.sqrt(G*2*SUN/550), 3*Math.PI/2, "rocky", 125, 0, 0));
+//bodies.push(new Planet(width/2 + 200, height/2, Math.sqrt(G*2*SUN/200), 3*Math.PI/2, "rocky", 125, 0, 0));
 
-//bodies.push(new Planet(width/2 - 550, height/2, 3, 0, "rocky", 125, 0, 0));
-//bodies.push(new Planet(width/2, height/2 + 550, 5.81, 3*Math.PI/2, "rocky", 125, 0, 0));
-//bodies.push(new Planet(width/2 + 550, height/2, 3, Math.PI, "rocky", 125, 0, 0));
-//bodies.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0, 0));
+bodies.push(new Planet(width/2 - 550, height/2, 3, 0, "rocky", 125, 0, 0));
+bodies.push(new Planet(width/2, height/2 + 550, 5.81, 3*Math.PI/2, "rocky", 125, 0, 0));
+bodies.push(new Planet(width/2 + 550, height/2, 3, Math.PI, "rocky", 125, 0, 0));
+bodies.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0, 0));
 */
 
 // DEMO SYSTEM
@@ -260,7 +260,7 @@ bodies.at(2).assignParent(bodies.at(1));
 */
 
 // GALAXY SYSTEM
-/*
+
 bodies.push(new Star(width/2, height/2, 0, 0, "main"));
 for(let i = 0; i < 15; i++) {
     bodies.push(new Planet(bodies.at(0).getX() - width/40*i - 100, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/(width/40*i+100)), Math.PI/2, "rocky", 100+5*i, 0, 0));
@@ -268,7 +268,7 @@ for(let i = 0; i < 15; i++) {
     bodies.push(new Planet(bodies.at(0).getX() + width/40*i + 100, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/(width/40*i+100)), 3*Math.PI/2, "rocky", 0, 0, 100+5*i));
     bodies.at(2*i+2).assignParent(bodies.at(0));
 }
-*/
+
 
 // SOLAR COLLISION SYSTEM
 /*
@@ -283,7 +283,7 @@ bodies.push(new Planet(bodies.at(1).getX() - 200, bodies.at(1).getY(), Math.sqrt
 */
 
 // GALAXY COLLISION SYSTEM
-
+/*
 bodies.push(new Star(width/2, height*0.9, 2, 0, "main"));
 bodies.push(new Star(width/2, height*0.1, 2, Math.PI, "main"));
 for(let i = 0; i < 7; i++) {
@@ -298,7 +298,7 @@ for(let i = 0; i < 7; i++) {
     bodies.push(new Planet(bodies.at(1).getX() + 50*i + 100, bodies.at(1).getY(), Math.sqrt(G*bodies.at(1).getMass()/(50*i+100)), 3*Math.PI/2, "rocky", 0, 0, 100+5*i));
     bodies.at(-1).assignParent(bodies.at(1));
 }
-
+*/
 
 /*
     LOOP
