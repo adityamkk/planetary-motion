@@ -5,3 +5,12 @@ body {
     font:200;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
+
+#presets {
+    background-color:beige;
+    margin : 1;
+    border-radius : 20px;
+    padding: 15px;
+    float:right;
+    font-weight: bold;
+}

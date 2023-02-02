@@ -13,6 +13,15 @@ const SUN = 100000000000000;
 const PLANET = SUN/1000000;
 const MOON = PLANET/10000;
 let bodies = [];
+let stars = [];
+let planets = [];
+let moons = [];
+let presets = [];
+
+let mouseX = 0;
+let mouseY = 0;
+
+let simulationStart = false;
 
 /*
     HELPER FUNCTIONS
@@ -40,6 +49,10 @@ function drawCircle(fillStyle, x, y, radius) {
     ctx.fillStyle = fillStyle;
     ctx.arc(x, height - y, radius, 0, 2*Math.PI, true);
     ctx.fill();
+}
+
+function drawBody(body) {
+    drawCircle(body.getFillStyle(), body.getX(), body.getY(), body.getRadius());
 }
 
 /*
@@ -74,7 +87,7 @@ function angle(body1, body2) {
         if(body2.getX() > body1.getX()) {
             return Math.atan((body2.getY() - body1.getY())/(body2.getX() - body1.getX()));
         } else {
-            return Math.PI - Math.atan((body2.getY() - body1.getY())/(body2.getX() - body1.getX()));
+            return Math.PI + Math.atan((body2.getY() - body1.getY())/(body2.getX() - body1.getX()));
         }
         //return Math.atan((body2.getY() - body1.getY())/(body2.getX() - body1.getX()));
     } else {
@@ -173,6 +186,16 @@ class Body {
         this.setVX(Math.sqrt(G*body.getMass()/distance(this,body))*Math.cos(angle(this,body)+Math.PI/2) + body.getVX());
         this.setVY(Math.sqrt(G*body.getMass()/distance(this,body))*Math.sin(angle(this,body)+Math.PI/2) + body.getVY());
     }
+
+    assignBinary(body) {
+        const r = distance(this,body);
+        const v1 = Math.sqrt(G*Math.pow(body.getMass(),2)/(r*(this.getMass()+body.getMass())));
+        const v2 = Math.sqrt(G*Math.pow(this.getMass(),2)/(r*(this.getMass()+body.getMass())));
+        this.setVX(v1*Math.cos(angle(this,body)+Math.PI/2)); console.log("V1 : " + angle(this,body));
+        this.setVY(v1*Math.sin(angle(this,body)+Math.PI/2)); 
+        body.setVX(v2*Math.cos(angle(body,this)+Math.PI/2)); console.log("V2 : " + angle(body,this));
+        body.setVY(v2*Math.sin(angle(body,this)+Math.PI/2));
+    }
 }
 
 class Star extends Body {
@@ -239,6 +262,7 @@ class Moon extends Body {
 /*
 bodies.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
 bodies.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
+bodies.at(0).assignBinary(bodies.at(1));
 //bodies.push(new Planet(width/2 - 550, height/2, Math.sqrt(G*2*SUN/550), 3*Math.PI/2, "rocky", 125, 0, 0));
 //bodies.push(new Planet(width/2 + 200, height/2, Math.sqrt(G*2*SUN/200), 3*Math.PI/2, "rocky", 125, 0, 0));
 
@@ -251,16 +275,14 @@ bodies.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0
 // DEMO SYSTEM
 /*
 bodies.push(new Star(width/2, height/2, 0, 0, "red"));
-
 bodies.push((new Planet(width/2 - 500, height/2, 0, 0, "gaseous", 30, 0, 125)));
 bodies.at(1).assignParent(bodies.at(0));
-
 bodies.push(new Moon(width/2-450, height/2, 0, 0));
 bodies.at(2).assignParent(bodies.at(1));
 */
 
 // GALAXY SYSTEM
-
+/*
 bodies.push(new Star(width/2, height/2, 0, 0, "main"));
 for(let i = 0; i < 15; i++) {
     bodies.push(new Planet(bodies.at(0).getX() - width/40*i - 100, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/(width/40*i+100)), Math.PI/2, "rocky", 100+5*i, 0, 0));
@@ -268,24 +290,13 @@ for(let i = 0; i < 15; i++) {
     bodies.push(new Planet(bodies.at(0).getX() + width/40*i + 100, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/(width/40*i+100)), 3*Math.PI/2, "rocky", 0, 0, 100+5*i));
     bodies.at(2*i+2).assignParent(bodies.at(0));
 }
-
-
-// SOLAR COLLISION SYSTEM
-/*
-bodies.push(new Star(width*0.25, height*0.25, 1, 0, "main"));
-bodies.push(new Star(width*0.75, height*0.75, 1, Math.PI, "main"));
-
-bodies.push(new Planet(bodies.at(0).getX() - 400, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/300), Math.PI/2, "rocky", 125, 0, 0));
-bodies.push(new Planet(bodies.at(0).getX() + 200, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/400), 3*Math.PI/2, "rocky", 125, 0, 0));
-
-bodies.push(new Planet(bodies.at(1).getX() + 400, bodies.at(1).getY(), Math.sqrt(G*bodies.at(1).getMass()/300), 3*Math.PI/2, "rocky", 125, 0, 0));
-bodies.push(new Planet(bodies.at(1).getX() - 200, bodies.at(1).getY(), Math.sqrt(G*bodies.at(1).getMass()/400), Math.PI/2, "rocky", 125, 0, 0));
 */
 
 // GALAXY COLLISION SYSTEM
 /*
-bodies.push(new Star(width/2, height*0.9, 2, 0, "main"));
-bodies.push(new Star(width/2, height*0.1, 2, Math.PI, "main"));
+bodies.push(new Star(width*0.6, height*0.8, 2, 0, "main"));
+bodies.push(new Star(width*0.4, height*0.2, 2, Math.PI, "main"));
+bodies.at(0).assignBinary(bodies.at(1));
 for(let i = 0; i < 7; i++) {
     bodies.push(new Planet(bodies.at(0).getX() - 50*i - 100, bodies.at(0).getY(), Math.sqrt(G*bodies.at(0).getMass()/(50*i+100)), Math.PI/2, "rocky", 100+5*i, 0, 0));
     bodies.at(-1).assignParent(bodies.at(0));
@@ -322,4 +333,123 @@ function loop() {
     window.requestAnimationFrame(loop);
 }
 
-loop();
+document.addEventListener("mousemove", (event) => {
+    mouseX = event.clientX;
+    mouseY = height - event.clientY + document.getElementById("presets").offsetHeight;
+});
+
+document.getElementById("presets").addEventListener("change", () => {
+    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,width,height);
+    presets = [];
+    switch(document.getElementById("presets").value) {
+        case "Twin Galaxy":
+            presets.push(new Star(width*0.6, height*0.8, 2, 0, "main"));
+            presets.push(new Star(width*0.4, height*0.2, 2, Math.PI, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            for(let i = 0; i < 7; i++) {
+                presets.push(new Planet(presets.at(0).getX() - 50*i - 100, presets.at(0).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(-1).assignParent(presets.at(0));
+                presets.push(new Planet(presets.at(0).getX() + 50*i + 100, presets.at(0).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(-1).assignParent(presets.at(0));
+            }
+            for(let i = 0; i < 7; i++) {
+                presets.push(new Planet(presets.at(1).getX() - 50*i - 100, presets.at(1).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(-1).assignParent(presets.at(1));
+                presets.push(new Planet(presets.at(1).getX() + 50*i + 100, presets.at(1).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(-1).assignParent(presets.at(1));
+            }
+            break;
+        case "Tattooine":
+            presets.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
+            presets.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            presets.push(new Planet(width/2 - 550, height/2, Math.sqrt(G*2*SUN/550), 3*Math.PI/2, "rocky", 125, 0, 0));
+            break;
+        case "Simple":
+            presets.push(new Star(width/2, height/2, 0, 0, "red"));
+            presets.push((new Planet(width/2 - 700, height/2, 0, 0, "gaseous", 30, 0, 125)));
+            presets.at(1).assignParent(presets.at(0));
+            presets.push(new Moon(width/2-750, height/2, 0, 0));
+            presets.at(2).assignParent(presets.at(1));
+            break;
+        case "Galaxy":
+            presets.push(new Star(width/2, height/2, 0, 0, "main"));
+            for(let i = 0; i < 15; i++) {
+                presets.push(new Planet(presets.at(0).getX() - width/40*i - 100, presets.at(0).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(2*i+1).assignParent(presets.at(0));
+                presets.push(new Planet(presets.at(0).getX() + width/40*i + 100, presets.at(0).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(2*i+2).assignParent(presets.at(0));
+            }
+            break;
+        case "Gravity Cannon":
+            presets.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
+            presets.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            presets.push(new Planet(width/2 - 550, height/2, 3, 0, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2, height/2 + 550, 5.81, 3*Math.PI/2, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2 + 550, height/2, 3, Math.PI, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0, 0));
+            break;
+    }
+    for(const b of presets) {
+        drawBody(b);
+    }
+    for(const b of stars) {
+        drawBody(b);
+    }
+    for(const b of planets) {
+        drawBody(b);
+    }
+    for(const b of moons) {
+        drawBody(b);
+    }
+});
+
+window.addEventListener("keydown", (event) => {
+    if(event.key === "Escape") {
+        location.reload();
+    }
+    if(event.key === "B") {
+        stars.push(new Star(mouseX, mouseY, 0, 0, "blue"));
+        drawBody(stars.at(-1));
+    }
+    if(event.key === "M") {
+        stars.push(new Star(mouseX, mouseY, 0, 0, "main"));
+        drawBody(stars.at(-1));
+    }
+    if(event.key === "R") {
+        stars.push(new Star(mouseX, mouseY, 0, 0, "red"));
+        drawBody(stars.at(-1));
+    }
+    if(event.key === "O") {
+        stars.push(new Star(mouseX, mouseY, 0, 0, "orange"));
+        drawBody(stars.at(-1));
+    }
+    if(event.key === "Y") {
+        stars.push(new Star(mouseX, mouseY, 0, 0, "yellow"));
+        drawBody(stars.at(-1));
+    }
+    if(event.key === "2" && stars.length >= 2) {
+        stars.at(-1).assignBinary(stars.at(-2));
+    }
+    if(event.key === "r") {
+        planets.push(new Planet(mouseX, mouseY, 0, 0, "rocky", 125, 0, 0));
+        if(stars.length > 0) {planets.at(-1).assignParent(stars.at(-1));}
+        drawBody(planets.at(-1));
+    }
+    if(event.key === "g") {
+        planets.push(new Planet(mouseX, mouseY, 0, 0, "gaseous", 13, 153, 150));
+        if(stars.length > 0) {planets.at(-1).assignParent(stars.at(-1))};
+        drawBody(planets.at(-1));
+    }
+    if(!simulationStart && event.key === "Enter") {
+        bodies = [...bodies,...presets,...stars,...planets,...moons];
+        document.getElementById("presets").margin = 0;
+        document.getElementById("presets").padding = 0;
+        document.getElementById("presets").value = "";
+        document.getElementById("presets").hidden = true;
+        simulationStart = true;
+        loop();
+    }
+});
