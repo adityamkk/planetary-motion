@@ -38,6 +38,16 @@ function getFillStyle(r, g, b) {
 }
 
 /*
+Precondition:
+    "instructions" id exists
+Postconditions:
+    shows the popup text
+*/
+function showInstructions() {
+    document.getElementById("instructions").classList.toggle("show");
+  }
+
+/*
 Precondition: 
     fillStyle is of type string and is a valid fillStyle
     x, y, and radius are doubles
@@ -391,6 +401,11 @@ document.getElementById("presets").addEventListener("change", () => {
             presets.push(new Planet(width/2 + 550, height/2, 3, Math.PI, "rocky", 125, 0, 0));
             presets.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0, 0));
             break;
+        case "Three Body?":
+            presets.push(new Star(width/3, height/4, Math.sqrt(G*SUN/1000), 0-Math.PI/3, "yellow"));
+            presets.push(new Star(2*width/3, height/4, Math.sqrt(G*SUN/1000), 2*Math.PI/3-Math.PI/3, "yellow"));
+            presets.push(new Star(width/2, height/4+Math.sqrt(3)/2*width/3, Math.sqrt(G*SUN/1000), 4*Math.PI/3-Math.PI/3, "yellow"));
+            break;
     }
     for(const b of presets) {
         drawBody(b);
@@ -443,12 +458,22 @@ window.addEventListener("keydown", (event) => {
         if(stars.length > 0) {planets.at(-1).assignParent(stars.at(-1))};
         drawBody(planets.at(-1));
     }
-    if(!simulationStart && event.key === "Enter") {
+    if(!simulationStart && (event.key === "Enter")) {
         bodies = [...bodies,...presets,...stars,...planets,...moons];
-        document.getElementById("presets").margin = 0;
-        document.getElementById("presets").padding = 0;
-        document.getElementById("presets").value = "";
         document.getElementById("presets").hidden = true;
+        document.getElementById("start").hidden = true;
+        //document.getElementById("instructions").hidden = true;
+        simulationStart = true;
+        loop();
+    }
+});
+
+document.getElementById("start").addEventListener('click', function() {
+    if(!simulationStart) {
+        bodies = [...bodies,...presets,...stars,...planets,...moons];
+        document.getElementById("presets").hidden = true;
+        document.getElementById("start").hidden = true;
+        //document.getElementById("instructions").hidden = true;
         simulationStart = true;
         loop();
     }
