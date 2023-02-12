@@ -66,6 +66,33 @@ function drawBody(body) {
 }
 
 /*
+Precondition:
+    parameter is a boolean (true or false)
+Postcondition:
+    Instruction text is displayed on screen determined by the boolean
+
+    <div id="instructions">
+      <h2>Instructions:</h2>
+      <p>Pressing keys corresponding to certain bodies will place it at the location of the mouse cursor.</p>
+      <p>Planets are assigned uniform orbits around the previously placed star.</p>
+      <p>Adjust presets using the selector in the top right corner</p>
+      <ul>
+        <li>B: blue star</li>
+        <li>M: main sequence star</li>
+        <li>R: red dwarf</li>
+        <li>O: orange star</li>
+        <li>Y: yellow star</li>
+        <li>2: assigns previous two stars to binary orbits</li>
+        <li>r: rocky planet</li>
+        <li>g: gas giant</li>
+        <li>Enter: start simulation</li>
+        <li>Escape: clear simulation</li>
+      </ul>
+    </div>
+*/
+
+
+/*
 Precondition: 
     body1 and body2 are two initialized Body objects
 Postcondition:
