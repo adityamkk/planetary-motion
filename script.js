@@ -375,6 +375,77 @@ document.addEventListener("mousemove", (event) => {
     mouseY = height - event.clientY + document.getElementById("presets").offsetHeight;
 });
 
+ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillRect(0,0,width,height);
+    presets = [];
+    switch(document.getElementById("presets").value) {
+        case "Twin Galaxy":
+            presets.push(new Star(width*0.6, height*0.8, 2, 0, "main"));
+            presets.push(new Star(width*0.4, height*0.2, 2, Math.PI, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            for(let i = 0; i < 7; i++) {
+                presets.push(new Planet(presets.at(0).getX() - 50*i - 100, presets.at(0).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(-1).assignParent(presets.at(0));
+                presets.push(new Planet(presets.at(0).getX() + 50*i + 100, presets.at(0).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(-1).assignParent(presets.at(0));
+            }
+            for(let i = 0; i < 7; i++) {
+                presets.push(new Planet(presets.at(1).getX() - 50*i - 100, presets.at(1).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(-1).assignParent(presets.at(1));
+                presets.push(new Planet(presets.at(1).getX() + 50*i + 100, presets.at(1).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(-1).assignParent(presets.at(1));
+            }
+            break;
+        case "Tattooine":
+            presets.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
+            presets.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            presets.push(new Planet(width/2 - 550, height/2, Math.sqrt(G*2*SUN/550), 3*Math.PI/2, "rocky", 125, 0, 0));
+            break;
+        case "Simple":
+            presets.push(new Star(width/2, height/2, 0, 0, "red"));
+            presets.push((new Planet(width/2 - 700, height/2, 0, 0, "gaseous", 30, 0, 125)));
+            presets.at(1).assignParent(presets.at(0));
+            presets.push(new Moon(width/2-750, height/2, 0, 0));
+            presets.at(2).assignParent(presets.at(1));
+            break;
+        case "Galaxy":
+            presets.push(new Star(width/2, height/2, 0, 0, "main"));
+            for(let i = 0; i < 15; i++) {
+                presets.push(new Planet(presets.at(0).getX() - width/40*i - 100, presets.at(0).getY(), 0, 0, "rocky", 100+5*i, 0, 0));
+                presets.at(2*i+1).assignParent(presets.at(0));
+                presets.push(new Planet(presets.at(0).getX() + width/40*i + 100, presets.at(0).getY(), 0, 0, "rocky", 0, 0, 100+5*i));
+                presets.at(2*i+2).assignParent(presets.at(0));
+            }
+            break;
+        case "Gravity Cannon":
+            presets.push(new Star(width/2+75, height/2, Math.sqrt(G*SUN/300), 3*Math.PI/2, "main"));
+            presets.push(new Star(width/2-75, height/2, Math.sqrt(G*SUN/300), Math.PI/2, "main"));
+            presets.at(0).assignBinary(presets.at(1));
+            presets.push(new Planet(width/2 - 550, height/2, 3, 0, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2, height/2 + 550, 5.81, 3*Math.PI/2, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2 + 550, height/2, 3, Math.PI, "rocky", 125, 0, 0));
+            presets.push(new Planet(width/2, height/2 - 550, 5.81, Math.PI/2, "rocky", 125, 0, 0));
+            break;
+        case "Three Body?":
+            presets.push(new Star(width/3, height/4, Math.sqrt(G*SUN/1000), 0-Math.PI/3, "yellow"));
+            presets.push(new Star(2*width/3, height/4, Math.sqrt(G*SUN/1000), 2*Math.PI/3-Math.PI/3, "yellow"));
+            presets.push(new Star(width/2, height/4+Math.sqrt(3)/2*width/3, Math.sqrt(G*SUN/1000), 4*Math.PI/3-Math.PI/3, "yellow"));
+            break;
+    }
+    for(const b of presets) {
+        drawBody(b);
+    }
+    for(const b of stars) {
+        drawBody(b);
+    }
+    for(const b of planets) {
+        drawBody(b);
+    }
+    for(const b of moons) {
+        drawBody(b);
+    }
+
 document.getElementById("presets").addEventListener("change", () => {
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillRect(0,0,width,height);
